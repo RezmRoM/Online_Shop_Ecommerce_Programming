@@ -2,28 +2,35 @@ package com.example.online_shop_ecommerce_programming.Model
 
 import android.os.Parcel
 import android.os.Parcelable
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class ItemsModel(
     var title: String = "",
     var description: String = "",
-    var picUrl: ArrayList<String> = ArrayList(),
-    var model: ArrayList<String> = ArrayList(),
+    @SerialName("pic_urls")
+    var picUrl: List<String> = emptyList(),
+    @SerialName("models")
+    var model: List<String> = emptyList(),
     var price: Double = 0.0,
     var rating: Double = 0.0,
     var numberInCart: Int = 0,
+    @SerialName("show_recommended")
     var showRecommended: Boolean = false,
-    var categoryId: String = ""
+    @SerialName("category_id")
+    var categoryId: Int = 0
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString().toString(),
         parcel.readString().toString(),
-        parcel.createStringArrayList() as ArrayList<String>,
-        parcel.createStringArrayList() as ArrayList<String>,
+        parcel.createStringArrayList()?.toList() ?: emptyList(),
+        parcel.createStringArrayList()?.toList() ?: emptyList(),
         parcel.readDouble(),
         parcel.readDouble(),
         parcel.readInt(),
         parcel.readByte() != 0.toByte(),
-        parcel.readString().toString()
+        parcel.readInt()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -35,7 +42,7 @@ data class ItemsModel(
         parcel.writeDouble(rating)
         parcel.writeInt(numberInCart)
         parcel.writeByte(if (showRecommended) 1 else 0)
-        parcel.writeString(categoryId)
+        parcel.writeInt(categoryId)
     }
 
     override fun describeContents(): Int {
