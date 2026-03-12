@@ -3,18 +3,17 @@ package com.example.online_shop_ecommerce_programming.ViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.online_shop_ecommerce_programming.Model.CategoryModel
-import com.example.online_shop_ecommerce_programming.Model.SliderModel
 import com.example.online_shop_ecommerce_programming.Model.ItemsModel
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.Query
-import com.google.firebase.database.ValueEventListener
+import com.example.online_shop_ecommerce_programming.Model.SliderModel
+import com.example.online_shop_ecommerce_programming.Network.SupabaseClientProvider
+import io.github.jan.supabase.postgrest.from
+import kotlinx.coroutines.launch
 
-class MainViewModel(): ViewModel() {
+class MainViewModel() : ViewModel() {
 
-    private val firebaseDatabase = FirebaseDatabase.getInstance()
+    private val supabase = SupabaseClientProvider.client
 
     private val _category = MutableLiveData<MutableList<CategoryModel>>()
     private val _banner = MutableLiveData<List<SliderModel>>()
@@ -25,77 +24,54 @@ class MainViewModel(): ViewModel() {
     val recommended: LiveData<MutableList<ItemsModel>> = _recommended
 
     fun loadFiltered(id: String) {
-        val Ref = firebaseDatabase.getReference("Items")
-        val query: Query = Ref.orderByChild("categoryId").equalTo(id)
-        query.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val lists = mutableListOf<ItemsModel>()
-                for (childSnapshot in snapshot.children) {
-                    val list = childSnapshot.getValue(ItemsModel::class.java)
-                    if (list != null) {
-                        lists.add(list)
+        viewModelScope.launch {
+            try {
+                val results = supabase.from("items").select {
+                    filter {
+                        eq("category_id", id)
                     }
-                }
-                _recommended.value = lists
+                }.decodeList<ItemsModel>()
+                _recommended.postValue(results.toMutableList())
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-            override fun onCancelled(error: DatabaseError) {
-            }
-        })
+        }
     }
 
     fun loadRecommended() {
-        val Ref = firebaseDatabase.getReference("Items")
-        val query: Query = Ref.orderByChild("showRecommended").equalTo(true)
-        query.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val lists = mutableListOf<ItemsModel>()
-                for (childSnapshot in snapshot.children) {
-                    val list = childSnapshot.getValue(ItemsModel::class.java)
-                    if (list != null) {
-                        lists.add(list)
+        viewModelScope.launch {
+            try {
+                val results = supabase.from("items").select {
+                    filter {
+                        eq("show_recommended", true)
                     }
-                }
-                _recommended.value = lists
+                }.decodeList<ItemsModel>()
+                _recommended.postValue(results.toMutableList())
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-            override fun onCancelled(error: DatabaseError) {
-            }
-        })
+        }
     }
 
     fun loadBanners() {
-        val Ref = firebaseDatabase.getReference("Banner")
-        Ref.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val lists = mutableListOf<SliderModel>()
-                for (childSnapshot in snapshot.children) {
-                    val list = childSnapshot.getValue(SliderModel::class.java)
-                    if (list != null) {
-                        lists.add(list)
-                    }
-                }
-                _banner.value = lists
+        viewModelScope.launch {
+            try {
+                val results = supabase.from("banners").select().decodeList<SliderModel>()
+                _banner.postValue(results)
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-            override fun onCancelled(error: DatabaseError) {
-            }
-        })
+        }
     }
 
     fun loadCategory() {
-        val Ref = firebaseDatabase.getReference("Category")
-        Ref.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val lists = mutableListOf<CategoryModel>()
-                for (childSnapshot in snapshot.children) {
-                    val list = childSnapshot.getValue(CategoryModel::class.java)
-                    if (list != null) {
-                        lists.add(list)
-                    }
-                }
-                _category.value = lists
+        viewModelScope.launch {
+            try {
+                val results = supabase.from("categories").select().decodeList<CategoryModel>()
+                _category.postValue(results.toMutableList())
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-
-            override fun onCancelled(error: DatabaseError) {
-            }
-        })
+        }
     }
 }
