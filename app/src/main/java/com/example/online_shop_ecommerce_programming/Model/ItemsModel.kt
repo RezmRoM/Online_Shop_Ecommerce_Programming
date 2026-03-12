@@ -4,6 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 @Serializable
 data class ItemsModel(
@@ -15,11 +16,13 @@ data class ItemsModel(
     var model: List<String> = emptyList(),
     var price: Double = 0.0,
     var rating: Double = 0.0,
+    @Transient
     var numberInCart: Int = 0,
     @SerialName("show_recommended")
     var showRecommended: Boolean = false,
     @SerialName("category_id")
-    var categoryId: Int = 0
+    var categoryId: Int = 0,
+    var id: Int = 0
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString().toString(),
@@ -30,6 +33,7 @@ data class ItemsModel(
         parcel.readDouble(),
         parcel.readInt(),
         parcel.readByte() != 0.toByte(),
+        parcel.readInt(),
         parcel.readInt()
     )
 
@@ -43,6 +47,7 @@ data class ItemsModel(
         parcel.writeInt(numberInCart)
         parcel.writeByte(if (showRecommended) 1 else 0)
         parcel.writeInt(categoryId)
+        parcel.writeInt(id)
     }
 
     override fun describeContents(): Int {
