@@ -42,8 +42,6 @@ android {
         compose = true
     }
 
-    // Блок composeOptions УДАЛЕН. Начиная с Kotlin 2.0.0 он больше не требуется.
-
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -55,7 +53,7 @@ dependencies {
     // Основные зависимости
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.activity.ktx) // Исправлено имя
+    implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.material)
@@ -73,6 +71,7 @@ dependencies {
     implementation(libs.androidx.foundation)
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.constraintlayout.compose)
+    implementation(libs.androidx.navigation.compose)
     debugImplementation(libs.androidx.ui.tooling)
 
     // Supabase + Ktor 3

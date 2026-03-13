@@ -19,6 +19,7 @@ supabase = "3.1.1"
 ktor = "3.0.3"
 kotlinxSerializationJson = "1.7.3"
 constraintlayout = "2.2.1"
+navigationCompose = "2.8.3"
 
 [libraries]
 # UI & AndroidX
@@ -27,11 +28,14 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 
-# Activity (Исправлено имя для устранения ошибки Accessors)
+# Activity
 androidx-activity-ktx = { group = "androidx.activity", name = "activity", version.ref = "activityCompose" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 
-# Compose (Версии управляются через BOM)
+# Navigation
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+
+# Compose
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
@@ -46,7 +50,7 @@ androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name 
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
 
-# Supabase + Ktor 3 (Исправляет NoClassDefFoundError)
+# Supabase + Ktor 3
 supabase-bom = { module = "io.github.jan-tennert.supabase:bom", version.ref = "supabase" }
 supabase-postgrest = { module = "io.github.jan-tennert.supabase:postgrest-kt", version.ref = "supabase" }
 supabase-storage = { module = "io.github.jan-tennert.supabase:storage-kt", version.ref = "supabase" }
